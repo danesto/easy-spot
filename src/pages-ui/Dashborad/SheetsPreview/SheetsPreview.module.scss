@@ -1,0 +1,32 @@
+.table {
+  thead {
+    tr th {
+      color: #fff;
+      &:first-child {
+        border-left: 1px solid var(--chakra-colors-blue-800);
+      }
+      &:last-child {
+        border-right: 1px solid var(--chakra-colors-blue-800);
+      }
+    }
+  }
+
+  tbody {
+    tr td:nth-of-type(odd),
+    tr td:nth-of-type(even) {
+      border-bottom: 1px solid var(--chakra-colors-gray-400);
+
+      &:first-child {
+        border-left: 1px solid var(--chakra-colors-gray-400);
+      }
+      &:last-child {
+        border-right: 1px solid var(--chakra-colors-gray-400);
+      }
+    }
+    tr:hover {
+      td {
+        background-color: var(--chakra-colors-gray-100);
+      }
+    }
+  }
+}

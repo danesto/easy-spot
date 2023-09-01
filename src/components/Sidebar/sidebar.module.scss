@@ -1,0 +1,25 @@
+.container {
+  grid-area: sidebar;
+  flex-direction: column;
+  max-width: 270px;
+  min-height: 100dvh;
+  border-right: 1px solid var(--chakra-colors-blackAlpha-100);
+}
+
+.sidebar_box {
+  flex-direction: column;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+
+  &:first-child {
+    margin-top: 15px;
+  }
+
+  p {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}

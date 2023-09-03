@@ -15,7 +15,7 @@ function EditDrawer({ handleToggleDrawer, isDrawerOpen }: any) {
     >
       <DrawerOverlay />
       <DrawerContent>
-        <DrawerBody>Edit Parking lot form goes here</DrawerBody>
+        <DrawerBody>Edit or create Parking lot form goes here</DrawerBody>
       </DrawerContent>
     </Drawer>
   );

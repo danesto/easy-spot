@@ -66,7 +66,7 @@ export function ParkingLot() {
       columnGap="10px"
       rowGap="20px"
     >
-      {[...mockSpots, ...mockSpots, ...mockSpots].map((spot) => {
+      {mockSpots.map((spot) => {
         return (
           <GridItem
             data-available={spot.available}

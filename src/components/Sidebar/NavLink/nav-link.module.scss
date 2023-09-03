@@ -6,6 +6,7 @@
   border-width: 1px;
   border-color: transparent;
   border-radius: 6px;
+  text-decoration: none;
 
   svg {
     stroke-width: 1.5px;
@@ -14,13 +15,13 @@
   }
 
   &:hover {
-    text-decoration: none;
     background-color: var(--chakra-colors-blackAlpha-200);
     border-color: var(--chakra-colors-gray-600);
+    text-decoration: none !important;
   }
 
   &.active {
-    text-decoration: none;
+    text-decoration: none !important;
     background-color: var(--chakra-colors-blackAlpha-200);
     border-color: var(--chakra-colors-gray-700);
     background-color: var(--chakra-colors-blackAlpha-200);

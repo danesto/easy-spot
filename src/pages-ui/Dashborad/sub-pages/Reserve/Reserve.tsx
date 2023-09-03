@@ -3,7 +3,11 @@ import { Divider, Flex, Heading } from '@/components/Chakra';
 import { ParkingLot } from './ParkingLot/ParkingLot';
 import { Filters } from './Filters/Filters';
 
-export default function Reserve() {
+import { getUser } from '@/queries/user';
+
+export default async function Reserve() {
+  const users = await getUser();
+
   return (
     <Flex flexDir="column" gap="50px">
       <Heading as="h2" fontSize="2xl" fontWeight="semibold">

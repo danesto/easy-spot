@@ -7,5 +7,36 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+
+model User {
+  id            Int       @id @default(autoincrement())
+  name          String?
+  email         String?   @unique
+  isAdmin       Boolean   @map(name: "is_admin")
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  parkingLots   ParkingLotsOfUsers[]
+  @@map(name: "user")
+}
+
+model ParkingLot {
+  id  Int            @id @default(autoincrement())
+  name String
+  numberOfSpots Int  @map(name: "number_of_spots")
+  prefix  String
+  users   ParkingLotsOfUsers[]
+  @@map(name: "parking_lot")
+}
+
+model ParkingLotsOfUsers {
+  user  User            @relation(fields: [userId], references: [id])
+  userId Int
+  parkingLot ParkingLot @relation(fields: [parkingLotId], references: [id])
+  parkingLotId Int      @map(name: "parking_lot_id")
+  @@id([userId, parkingLotId])
+  @@map(name: "parking_lots_of_users")
 }

@@ -7,9 +7,6 @@ import {
   Stack,
   Text,
   useDisclosure,
-  DrawerOverlay,
-  DrawerBody,
-  DrawerContent,
   Heading,
   IconButton,
   Grid,
@@ -20,15 +17,26 @@ import Empty from '@/components/Empty';
 import { Plus } from 'react-feather';
 
 import styles from './parking-lots.module.scss';
+import { useState } from 'react';
+import { ParkingLot } from '@prisma/client';
 
 interface ParkingLotsProps {
   lots?: any[];
 }
 
 function ParkingLots({ lots }: ParkingLotsProps) {
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [lot, setLot] = useState<ParkingLot>();
+
   const { isOpen, onOpen, onClose } = useDisclosure({
     id: 'edit-parking-lot-drawer',
   });
+
+  const handleSetEditMode = (isEditMode: boolean, lot?: ParkingLot) => () => {
+    setIsEditMode(isEditMode);
+    setLot(lot);
+    onOpen();
+  };
 
   return (
     <Stack gap="40px">
@@ -41,7 +49,7 @@ function ParkingLots({ lots }: ParkingLotsProps) {
           color="white"
           ml="10px"
           colorScheme="blue"
-          onClick={onOpen}
+          onClick={handleSetEditMode(false)}
         />
       </Heading>
       <Grid
@@ -58,7 +66,7 @@ function ParkingLots({ lots }: ParkingLotsProps) {
                 key={lot?.name}
                 title={lot?.name}
                 buttonLabel="Edit"
-                onButtonClick={onOpen}
+                onButtonClick={handleSetEditMode(true, lot)}
               >
                 <Stack>
                   <Flex alignItems="center" gap="10px">
@@ -75,12 +83,12 @@ function ParkingLots({ lots }: ParkingLotsProps) {
           })
         )}
 
-        <EditDrawer isDrawerOpen={isOpen} handleToggleDrawer={onClose}>
-          <DrawerOverlay />
-          <DrawerContent>
-            <DrawerBody>tet</DrawerBody>
-          </DrawerContent>
-        </EditDrawer>
+        <EditDrawer
+          isDrawerOpen={isOpen}
+          handleToggleDrawer={onClose}
+          isEditMode={isEditMode}
+          lot={lot}
+        />
       </Grid>
     </Stack>
   );

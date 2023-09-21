@@ -13,8 +13,6 @@ export async function create(formData: FormData) {
       prefix: formData.get('prefix') as string,
     };
 
-    console.table(newParkingLot);
-
     await createParkingLot({ ...newParkingLot });
     // formData.map((item) => console.log(item));
     // const mappedData = formData?.map(item => {

@@ -9,23 +9,50 @@ import {
   FormLabel,
   Input,
   Spinner,
+  useToast,
 } from '@/components/Chakra';
 import { create } from './actions';
 import { useTransition } from 'react';
+import { ParkingLot } from '@prisma/client';
 
-function EditDrawer({ handleToggleDrawer, isDrawerOpen }: any) {
+interface EditDrawerProps {
+  isEditMode?: boolean;
+  handleToggleDrawer: () => void;
+  isDrawerOpen: boolean;
+  lot?: ParkingLot;
+}
+
+function EditDrawer({
+  handleToggleDrawer,
+  isDrawerOpen,
+  isEditMode,
+  lot,
+}: EditDrawerProps) {
   const [isPending, startTransition] = useTransition();
+
+  const toast = useToast();
+
+  const drawerTitle = isEditMode ? `Editing: ${lot?.name}` : 'Add parking lot';
 
   const handleSubmit = (formData: FormData) => {
     startTransition(async () => {
+      //todo: add edit action if isEditMode
       const res = await create(formData);
       if (res.success) {
         handleToggleDrawer();
+
+        toast({
+          title: 'Parking lot added!',
+          description: "You've sucessefully added new parking lot.",
+          status: 'success',
+          duration: 6000,
+          variant: 'subtle',
+          isClosable: true,
+          position: 'top',
+        });
       }
     });
   };
-
-  console.log(isPending);
 
   return (
     <Drawer
@@ -37,8 +64,8 @@ function EditDrawer({ handleToggleDrawer, isDrawerOpen }: any) {
       <DrawerOverlay />
       <DrawerContent>
         <DrawerHeader>
-          Add parking lot
-          {isPending && <Spinner />}
+          {drawerTitle}
+          {isPending && <Spinner ml="20px" />}
         </DrawerHeader>
         <DrawerBody>
           <form action={handleSubmit} method="post">

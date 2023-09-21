@@ -4,8 +4,13 @@ import NavLink from './NavLink/NavLink';
 import { menuItems } from './constants';
 
 import styles from './sidebar.module.scss';
+import { getServerSession } from 'next-auth';
 
-const Sidebar = () => {
+const Sidebar = async () => {
+  // Todo: think of a logic where to store logged in user data
+  // when session is active
+  const session = await getServerSession();
+
   return (
     <Flex bgColor="blue.800" className={styles.container}>
       <Flex flexDir="column" position="sticky" top="0">
@@ -17,7 +22,7 @@ const Sidebar = () => {
         <Divider borderColor="gray.700" />
         <Flex className={styles.sidebar_box} gap="10px">
           <Text fontSize="sm" color="gray.100">
-            @ danilo.stojanovic@doodle.com
+            @ {session?.user?.email}
           </Text>
           <Text fontSize="sm" color="gray.100">
             TX services

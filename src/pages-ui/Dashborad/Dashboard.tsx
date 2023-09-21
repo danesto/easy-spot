@@ -1,8 +1,14 @@
 import Card from '@/components/Card';
 import { Flex, Heading } from '@/components/Chakra';
 import SheetsPreview from './SheetsPreview';
+import { getServerSession } from 'next-auth';
 
-export function Dashboard() {
+console.log(process.env.NEXTAUTH_SECRET);
+
+export async function Dashboard() {
+  const session = await getServerSession();
+
+  console.log('session:', session);
   return (
     <Flex flexDir="column" rowGap="40px">
       <Flex gap="20px" justifyContent="flex-start">

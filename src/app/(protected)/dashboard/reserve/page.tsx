@@ -1,6 +1,6 @@
 import ReservePage from '@/pages-ui/Dashborad/sub-pages/Reserve';
 
-function Reserve() {
+async function Reserve() {
   return <ReservePage />;
 }
 

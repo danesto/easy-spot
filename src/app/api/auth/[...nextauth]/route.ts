@@ -1,0 +1,38 @@
+import { authorizeUser } from '@/queries/user';
+import auth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { User as UserModel } from '@prisma/client';
+
+const authHandler = auth({
+  secret: process.env.NEXTAUTH_SECRET,
+  providers: [
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: {
+          label: 'Email',
+          type: 'email',
+          placeholder: 'your-email@easyspot.com',
+        },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials, req) {
+        const user = await authorizeUser({
+          email: credentials?.email,
+          password: credentials?.password,
+        });
+
+        return user || null;
+      },
+    }),
+  ],
+});
+
+export { authHandler as GET, authHandler as POST };
+
+declare module 'next-auth' {
+  interface User extends UserModel {
+    // change the default type of id next-auth provides to match prisma's model
+    id: number;
+  }
+}

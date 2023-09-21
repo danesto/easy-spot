@@ -11,13 +11,15 @@ import {
   DrawerBody,
   DrawerContent,
   Heading,
-  Button,
   IconButton,
+  Grid,
 } from '@/components/Chakra';
 
 import EditDrawer from './EditDrawer/EditDrawer';
 import Empty from '@/components/Empty';
 import { Plus } from 'react-feather';
+
+import styles from './parking-lots.module.scss';
 
 interface ParkingLotsProps {
   lots?: any[];
@@ -28,7 +30,6 @@ function ParkingLots({ lots }: ParkingLotsProps) {
     id: 'edit-parking-lot-drawer',
   });
 
-  console.log(lots);
   return (
     <Stack gap="40px">
       <Heading fontSize="2xl" as="h2" fontWeight="semibold">
@@ -43,7 +44,11 @@ function ParkingLots({ lots }: ParkingLotsProps) {
           onClick={onOpen}
         />
       </Heading>
-      <Flex alignItems="center">
+      <Grid
+        className={styles.parkingLotContainer}
+        alignItems="center"
+        gap="10px"
+      >
         {lots && lots.length === 0 ? (
           <Empty />
         ) : (
@@ -76,7 +81,7 @@ function ParkingLots({ lots }: ParkingLotsProps) {
             <DrawerBody>tet</DrawerBody>
           </DrawerContent>
         </EditDrawer>
-      </Flex>
+      </Grid>
     </Stack>
   );
 }

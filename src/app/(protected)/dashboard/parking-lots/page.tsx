@@ -1,5 +1,9 @@
-import ParkingLotsPage from '@/pages-ui/Dashborad/sub-pages/ParkingLots/ParkingLots';
-import { getParkingLots } from '@/queries/parking-lots';
+import { getParkingLots } from '@/queries/parking-lot';
+import { lazy } from 'react';
+
+const ParkingLotsPage = lazy(
+  () => import('@/pages-ui/Dashborad/sub-pages/ParkingLots/ParkingLots')
+);
 
 async function ParkingLots() {
   const parkingLots = await getParkingLots({ userId: 1 });

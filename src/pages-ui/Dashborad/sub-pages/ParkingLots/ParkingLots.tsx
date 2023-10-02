@@ -10,11 +10,16 @@ import {
   Heading,
   IconButton,
   Grid,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Button,
 } from '@/components/Chakra';
 
 import EditDrawer from './EditDrawer/EditDrawer';
 import Empty from '@/components/Empty';
-import { Plus } from 'react-feather';
+import { MoreVertical, Plus, Trash2 } from 'react-feather';
 
 import styles from './parking-lots.module.scss';
 import { useState } from 'react';
@@ -64,7 +69,41 @@ function ParkingLots({ lots }: ParkingLotsProps) {
             return (
               <Card
                 key={lot?.name}
-                title={lot?.name}
+                title={
+                  <Flex justifyContent="space-between" alignItems="center">
+                    {lot?.name}
+                    <Menu placement="bottom-end">
+                      <MenuButton
+                        as={Button}
+                        variant="ghost"
+                        className={styles.deleteParkingLot}
+                        size="sm"
+                        rounded="full"
+                        padding={1}
+                      >
+                        <MoreVertical
+                          color="var(--chakra-colors-gray-500)"
+                          width="max-content"
+                        />
+                      </MenuButton>
+                      <MenuList
+                        border="1px"
+                        borderColor="gray.400"
+                        fontSize="16px"
+                        borderRadius="sm"
+                      >
+                        <MenuItem display="flex" gap="7px" fontWeight="medium">
+                          <Trash2
+                            size="20px"
+                            color="var(--chakra-colors-red-500)"
+                          />
+                          Delete this lot
+                        </MenuItem>
+                        <MenuItem fontWeight="medium">Reserve spots</MenuItem>
+                      </MenuList>
+                    </Menu>
+                  </Flex>
+                }
                 buttonLabel="Edit"
                 onButtonClick={handleSetEditMode(true, lot)}
               >

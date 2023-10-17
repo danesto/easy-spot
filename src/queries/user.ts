@@ -1,7 +1,21 @@
 import prisma from '@/../lib/prisma';
 
-const getUser = async () => {
-  return await prisma.user.findMany();
+const getUser = async (email: string) => {
+  try {
+    return await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        isAdmin: true,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 interface AuthorizeUser {
@@ -21,6 +35,7 @@ const authorizeUser = async ({ email, password }: AuthorizeUser) => {
         password,
       },
     });
+
     return user;
   } catch (error: any) {
     return false;

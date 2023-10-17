@@ -21,6 +21,7 @@ model User {
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   parkingLots   ParkingLotsOfUsers[]
+  parkingSpots  Reservations[]
   @@map(name: "user")
 }
 
@@ -30,6 +31,7 @@ model ParkingLot {
   numberOfSpots Int  @map(name: "number_of_spots")
   prefix  String
   users   ParkingLotsOfUsers[]
+  spots ParkingSpot[]
   @@map(name: "parking_lot")
 }
 
@@ -40,4 +42,24 @@ model ParkingLotsOfUsers {
   parkingLotId Int      @map(name: "parking_lot_id")
   @@id([userId, parkingLotId])
   @@map(name: "parking_lots_of_users")
+}
+
+model ParkingSpot {
+  id  Int            @id @default(autoincrement())
+  name String
+  parkingLot ParkingLot @relation(fields: [parkingLotId], references: [id])
+  parkingLotId Int  @map(name: "parking_lot_id")
+  prefix  String
+  isReserved Boolean
+  user Reservations[]
+  @@map(name: "parking_spot")
+}
+
+model Reservations {
+  user  User  @relation(fields: [userId], references: [id])
+  userId Int
+  parkingSpot ParkingSpot @relation(fields: [spotId], references: [id])
+  spotId Int      @map(name: "spot_id")
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  @@id([userId, spotId])
 }

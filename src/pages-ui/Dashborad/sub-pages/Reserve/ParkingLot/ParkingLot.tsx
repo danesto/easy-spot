@@ -6,58 +6,32 @@ import {
   Grid,
   GridItem,
   Heading,
+  Spinner,
   useToast,
 } from '@/components/Chakra';
 
 import styles from './parking-lot.module.scss';
+import { ParkingSpot, Reservations } from '@prisma/client';
+import { getReservationType } from './helpers';
+import { ReservationTypes, reservationTypesMap } from './types';
+import { useContext, useTransition } from 'react';
+import { AuthContext } from '@/app/providers/auth-provider';
+import { releaseReservation, submitReservation } from './actions';
+import cx from 'classnames';
+import { ParkingSpot as Spot } from './ParkingSpot/ParkingSpot';
 
-export function ParkingLot() {
-  const toast = useToast();
+interface ParkingLotProps {
+  spots?: (ParkingSpot & { parkingLot: { name: string } })[];
+  total?: number | null;
+  reservations?: (Reservations & { user: { email: string | null } })[] | null;
+}
 
-  const mockSpots = [
-    {
-      spot: 'P3',
-      parkingLot: 'Garage G1',
-      available: true,
-    },
-    {
-      spot: 'P4',
-      parkingLot: 'Garage G1',
-      available: false,
-    },
-    {
-      spot: 'P5',
-      parkingLot: 'Garage G1',
-      available: true,
-    },
-    {
-      spot: 'P56',
-      parkingLot: 'Garage G1',
-      available: true,
-    },
-    {
-      spot: 'P7',
-      parkingLot: 'Garage G1',
-      available: true,
-    },
-    {
-      spot: 'P8',
-      parkingLot: 'Garage G1',
-      available: true,
-    },
-  ];
-
-  const handleSubmitReservation = () => {
-    toast({
-      title: 'Space reserved!',
-      description: "You've sucessefully reserved parking space G1.",
-      status: 'success',
-      duration: 6000,
-      variant: 'subtle',
-      isClosable: true,
-      position: 'top',
-    });
-  };
+export function ParkingLot({
+  spots,
+  total: totalSpots,
+  reservations,
+}: ParkingLotProps) {
+  const user = useContext(AuthContext);
 
   return (
     <Grid
@@ -66,30 +40,8 @@ export function ParkingLot() {
       columnGap="10px"
       rowGap="20px"
     >
-      {mockSpots.map((spot) => {
-        return (
-          <GridItem
-            data-available={spot.available}
-            key={spot.spot}
-            className={styles.parkingSpaceBox}
-            borderRadius="sm"
-          >
-            <Heading fontSize="lg" as="h5" fontWeight="medium">
-              P4
-            </Heading>
-            <Badge color="gray.600" width="max-content">
-              Garage G1
-            </Badge>
-            <Button
-              disabled={!spot.available}
-              isDisabled={!spot.available}
-              colorScheme={spot.available ? 'blue' : 'gray'}
-              onClick={handleSubmitReservation}
-            >
-              {spot.available ? 'Reserve' : 'Unavailable'}
-            </Button>
-          </GridItem>
-        );
+      {spots?.map((spot) => {
+        return <Spot key={spot.id} spot={spot} reservations={reservations} />;
       })}
     </Grid>
   );

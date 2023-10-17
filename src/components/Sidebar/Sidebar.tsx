@@ -1,16 +1,16 @@
+'use client';
 import { Divider, Flex, Heading, Text } from '@/components/Chakra';
 import appSettings from '@/app.json';
 import NavLink from './NavLink/NavLink';
 import { menuItems } from './constants';
 
 import styles from './sidebar.module.scss';
-import { getServerSession } from 'next-auth';
+import { useContext } from 'react';
+import { AuthContext } from '@/app/providers/auth-provider';
+import Link from 'next/link';
 
-const Sidebar = async () => {
-  // Todo: think of a logic where to store logged in user data
-  // when session is active
-  const session = await getServerSession();
-
+const Sidebar = () => {
+  const user = useContext(AuthContext);
   return (
     <Flex bgColor="blue.800" className={styles.container}>
       <Flex flexDir="column" position="sticky" top="0">
@@ -21,8 +21,8 @@ const Sidebar = async () => {
         </Flex>
         <Divider borderColor="gray.700" />
         <Flex className={styles.sidebar_box} gap="10px">
-          <Text fontSize="sm" color="gray.100">
-            @ {session?.user?.email}
+          <Text as={Link} href="/" fontSize="sm" color="gray.100">
+            @ {user?.email}
           </Text>
           <Text fontSize="sm" color="gray.100">
             TX services

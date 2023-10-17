@@ -1,5 +1,5 @@
 import prisma from '@/../lib/prisma';
-import { ParkingLot } from '@prisma/client';
+import { ParkingLot, ParkingSpot } from '@prisma/client';
 
 type GetParkingLots = {
   userId: number;
@@ -30,6 +30,7 @@ const createParkingLot = async ({
   prefix,
 }: Omit<ParkingLot, 'id'>) => {
   try {
+    // create new lot
     const newParkingLot = await prisma.parkingLot.create({
       data: {
         name: name,
@@ -38,7 +39,8 @@ const createParkingLot = async ({
       },
     });
 
-    // populate many to many relation table as well
+    // and populate many to many relation table as well
+    // for corresponding user
     await prisma.parkingLotsOfUsers.create({
       data: {
         // todo: replace userId with user id from active session
@@ -47,10 +49,71 @@ const createParkingLot = async ({
       },
     });
 
+    const spotsToAdd: Omit<ParkingSpot, 'id'>[] = Array(numberOfSpots)
+      .fill(numberOfSpots)
+      .map((_value, key) => {
+        return {
+          name: `${prefix}${key + 1}`,
+          parkingLotId: newParkingLot.id,
+          prefix: prefix,
+          isReserved: false,
+        };
+      });
+
+    console.log(spotsToAdd);
+
+    await prisma.parkingSpot.createMany({
+      data: spotsToAdd,
+    });
+
     console.log('created: ', newParkingLot);
   } catch (error) {
     console.log(error);
   }
 };
 
-export { getParkingLots, createParkingLot };
+const getTotalParkingSpotsByLot = async () => {
+  try {
+    const totalSum = await prisma.parkingLot.aggregate({
+      where: {
+        users: { some: { userId: 1 } },
+      },
+      _sum: {
+        numberOfSpots: true,
+      },
+    });
+
+    const spots = await prisma.parkingSpot.findMany({
+      where: {
+        parkingLot: {
+          users: {
+            some: {
+              userId: 1,
+            },
+          },
+        },
+      },
+      orderBy: {
+        id: 'asc',
+      },
+      include: {
+        parkingLot: {
+          select: {
+            name: true,
+            users: {
+              select: {
+                userId: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return { total: totalSum._sum.numberOfSpots, spots };
+  } catch (error: unknown) {
+    console.log(error);
+  }
+};
+
+export { getParkingLots, createParkingLot, getTotalParkingSpotsByLot };

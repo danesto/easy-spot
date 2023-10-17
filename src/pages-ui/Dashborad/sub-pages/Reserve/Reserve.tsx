@@ -3,10 +3,12 @@ import { Divider, Flex, Heading } from '@/components/Chakra';
 import { ParkingLot } from './ParkingLot/ParkingLot';
 import { Filters } from './Filters/Filters';
 
-import { getUser } from '@/queries/user';
+import { getTotalParkingSpotsByLot } from '@/queries/parking-lot';
+import { getReservations } from '@/queries/reservations';
 
 export default async function Reserve() {
-  const users = await getUser();
+  const parkingSpaces = await getTotalParkingSpotsByLot();
+  const reservations = await getReservations();
 
   return (
     <Flex flexDir="column" gap="50px">
@@ -16,7 +18,7 @@ export default async function Reserve() {
       <Flex flexDir="column" gap="40px" alignItems="flex-start">
         <Filters />
         <Divider mt={0} orientation="horizontal" />
-        <ParkingLot />
+        <ParkingLot {...parkingSpaces} reservations={reservations} />
       </Flex>
     </Flex>
   );

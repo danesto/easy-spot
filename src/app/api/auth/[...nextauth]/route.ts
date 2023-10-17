@@ -21,7 +21,6 @@ const authHandler = auth({
           email: credentials?.email,
           password: credentials?.password,
         });
-        console.log('user', user);
 
         return user || null;
       },

@@ -1,23 +1,10 @@
 'use client';
 
-import {
-  Badge,
-  Button,
-  Grid,
-  GridItem,
-  Heading,
-  Spinner,
-  useToast,
-} from '@/components/Chakra';
+import { Grid } from '@/components/Chakra';
 
-import styles from './parking-lot.module.scss';
 import { ParkingSpot, Reservations } from '@prisma/client';
-import { getReservationType } from './helpers';
-import { ReservationTypes, reservationTypesMap } from './types';
-import { useContext, useTransition } from 'react';
+import { useContext } from 'react';
 import { AuthContext } from '@/app/providers/auth-provider';
-import { releaseReservation, submitReservation } from './actions';
-import cx from 'classnames';
 import { ParkingSpot as Spot } from './ParkingSpot/ParkingSpot';
 
 interface ParkingLotProps {

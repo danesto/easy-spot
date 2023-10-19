@@ -1,5 +1,4 @@
 import prisma from '../../lib/prisma';
-import { getServerSession } from 'next-auth';
 
 const getReservations = async () => {
   try {
@@ -27,8 +26,6 @@ type AddReservationParams = {
   spotId: number;
 };
 const addReservation = async ({ userId, spotId }: AddReservationParams) => {
-  const session = await getServerSession();
-
   try {
     const reservations = await prisma.reservations.create({
       data: {
@@ -51,8 +48,6 @@ const deleteReservation = async ({
   spotId,
   userId,
 }: DeleteReservationParams) => {
-  const session = await getServerSession();
-
   try {
     const reservations = await prisma.reservations.delete({
       where: {

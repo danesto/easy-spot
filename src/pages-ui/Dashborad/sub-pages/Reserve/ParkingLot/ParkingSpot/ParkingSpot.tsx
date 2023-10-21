@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Badge,
   Button,
@@ -8,11 +10,11 @@ import {
 } from '@/components/Chakra';
 import cx from 'classnames';
 import { reservationTypesMap, ReservationTypes } from '../types';
-import styles from '../parking-lot.module.scss';
 import { AuthContext } from '@/app/providers/auth-provider';
 import { useContext, useTransition } from 'react';
 import { releaseReservation, submitReservation } from '../actions';
 import { getReservationType } from '../helpers';
+import styles from '../parking-lot.module.scss';
 
 interface ParkingSpotProps {
   spot: any;

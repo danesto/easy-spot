@@ -1,5 +1,6 @@
 import prisma from '@/../lib/prisma';
 import { ParkingLot, ParkingSpot } from '@prisma/client';
+import { FilteringParams } from './types';
 
 type GetParkingLots = {
   userId: number;
@@ -72,7 +73,21 @@ const createParkingLot = async ({
   }
 };
 
-const getTotalParkingSpotsByLot = async () => {
+type getTotalParkingSpotsByLotParams = {
+  parkingLotId?: number;
+  search?: string;
+};
+
+const getTotalParkingSpotsByLot = async ({
+  parkingLotId,
+  search,
+}: getTotalParkingSpotsByLotParams) => {
+  const parkingLotFilter: FilteringParams = {};
+
+  if (parkingLotId) {
+    parkingLotFilter.id = parkingLotId;
+  }
+
   try {
     const totalSum = await prisma.parkingLot.aggregate({
       where: {
@@ -85,7 +100,12 @@ const getTotalParkingSpotsByLot = async () => {
 
     const spots = await prisma.parkingSpot.findMany({
       where: {
+        name: {
+          contains: search || '',
+          mode: 'insensitive',
+        },
         parkingLot: {
+          ...parkingLotFilter,
           users: {
             some: {
               userId: 1,

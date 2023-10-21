@@ -30,6 +30,7 @@
     "react-date-picker": "^10.5.0",
     "react-dom": "18.2.0",
     "react-feather": "^2.0.10",
+    "react-hook-form": "^7.47.0",
     "sass": "^1.63.6",
     "scss": "^0.2.4",
     "typescript": "5.1.6"

@@ -63,7 +63,6 @@ function ParkingSpot({ spot, reservations }: ParkingSpotProps) {
   };
 
   const handleReleaseReservation = (spotId: number) => () => {
-    console.log('Im here');
     try {
       startTransition(async () => {
         await releaseReservation({

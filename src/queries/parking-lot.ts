@@ -73,7 +73,7 @@ const createParkingLot = async ({
   }
 };
 
-type getTotalParkingSpotsByLotParams = {
+export type GetTotalParkingSpotsByLotParams = {
   parkingLotId?: number;
   search?: string;
 };
@@ -81,7 +81,7 @@ type getTotalParkingSpotsByLotParams = {
 const getTotalParkingSpotsByLot = async ({
   parkingLotId,
   search,
-}: getTotalParkingSpotsByLotParams) => {
+}: GetTotalParkingSpotsByLotParams) => {
   const parkingLotFilter: FilteringParams = {};
 
   if (parkingLotId) {

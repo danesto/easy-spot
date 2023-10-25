@@ -1,7 +1,7 @@
 'use client';
 import { Checkbox, Flex, Input, Select, Text } from '@/components/Chakra';
 import DatePicker from 'react-date-picker';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
@@ -9,24 +9,26 @@ import 'react-calendar/dist/Calendar.css';
 import styles from './filters.module.scss';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+
 import { getTimestamp } from '@/helpers/date';
 import { FilteringParams } from '@/constants/query-params';
-import { experimental_useFormStatus as useFormStatus } from 'react-dom';
-import { revalidatePath } from 'next/cache';
+import { ParkingLot } from '@prisma/client';
 
 type ValuePiece = Date | null;
 
 type DatePickerValue = ValuePiece | [ValuePiece, ValuePiece];
 
-export function Filters() {
-  const [previewDate, setPreviewDate] = useState<DatePickerValue | undefined>(
-    new Date()
-  );
+interface FiltersProps {
+  parkingLots: ParkingLot[];
+}
+export function Filters({ parkingLots }: FiltersProps) {
+  const [previewDate, setPreviewDate] = useState<
+    DatePickerValue | string | undefined
+  >(new Date().toISOString());
+  const [q, setQ] = useState('');
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
-  const { pending } = useFormStatus();
 
   const currentDate = new Date();
 
@@ -35,18 +37,22 @@ export function Filters() {
 
   const params = new URLSearchParams(Array.from(searchParams.entries()));
 
-  const { register, handleSubmit } = useForm({
-    reValidateMode: 'onChange',
-    mode: 'onChange',
-  });
-
   // Setting date to query params needs to be handled seperately
   const handleOnDateChange = (date: DatePickerValue) => {
+    const dateTest = date?.toString();
+
     if (date) {
       setPreviewDate(date);
+      const inputDate = new Date(dateTest as string);
 
-      const timestamp = getTimestamp(date as Date);
-      params.set(FilteringParams.Date, `${timestamp}`);
+      // Get year, month, and day components from the parsed date
+      const year = inputDate.getFullYear();
+      const month = String(inputDate.getMonth() + 1).padStart(2, '0'); // Month is 0-based, so add 1 and format as two digits
+      const day = String(inputDate.getDate()).padStart(2, '0');
+
+      // Create the output date string in 'YYYY-MM-DD' format
+      const outputDateStr = `${year}-${month}-${day}`;
+      params.set(FilteringParams.Date, `${outputDateStr}`);
 
       const query = params.toString();
 
@@ -54,17 +60,13 @@ export function Filters() {
     }
   };
 
-  const handleFormSubmit = (formData: any) => {
-    const parkingLotId = formData?.parkingLot;
-    const search = formData?.search;
+  const handleSetSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.currentTarget.value) {
+      setQ(e.currentTarget.value);
 
-    if (parkingLotId) {
-      params.set(FilteringParams.ParkingLot, parkingLotId);
-    }
-
-    if (search) {
-      params.set(FilteringParams.Search, search);
+      params.set(FilteringParams.Search, e.currentTarget.value);
     } else {
+      setQ('');
       params.delete(FilteringParams.Search);
     }
 
@@ -73,9 +75,20 @@ export function Filters() {
     router.push(`${pathname}?${query}`);
   };
 
+  const handleSetParkingLot = (e: ChangeEvent<HTMLSelectElement>) => {
+    if (e.currentTarget.value) {
+      params.set(FilteringParams.ParkingLot, e.target.value);
+    } else {
+      params.delete(FilteringParams.ParkingLot);
+    }
+
+    const query = params.toString();
+
+    router.push(`${pathname}?${query}`);
+  };
+
   return (
-    <form onChange={handleSubmit(handleFormSubmit)}>
-      {pending && 'LOADING'}
+    <form>
       <Flex gap="40px">
         <Flex flexDir="column" gap="10px">
           <Text fontSize="md" fontWeight="medium">
@@ -87,6 +100,7 @@ export function Filters() {
             maxDate={new Date(sevenDaysFromNow)}
             onChange={handleOnDateChange}
             clearIcon={null}
+            format="y-MM-dd"
             value={previewDate}
           />
           <Checkbox
@@ -104,10 +118,19 @@ export function Filters() {
           <Text fontSize="md" fontWeight="medium">
             Parking lot:
           </Text>
-          <Select w="150px" backgroundColor="#fff" {...register('parkingLot')}>
-            <option value="All">All</option>
-            <option value="1">Garage</option>
-            <option value="2">Outside</option>
+          <Select
+            w="150px"
+            backgroundColor="#fff"
+            onChange={handleSetParkingLot}
+          >
+            <option value="All">All lots</option>
+            {parkingLots.map((lot) => {
+              return (
+                <option key={lot.id} value={lot.id}>
+                  {lot.name}
+                </option>
+              );
+            })}
           </Select>
         </Flex>
 
@@ -115,7 +138,12 @@ export function Filters() {
           <Text fontSize="md" fontWeight="medium">
             Search spaces:
           </Text>
-          <Input bgColor="#fff" placeholder="P3" {...register('search')} />
+          <Input
+            bgColor="#fff"
+            placeholder="P3"
+            value={q}
+            onChange={handleSetSearch}
+          />
         </Flex>
       </Flex>
     </form>

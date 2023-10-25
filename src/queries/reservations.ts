@@ -1,8 +1,22 @@
 import prisma from '../../lib/prisma';
 
-const getReservations = async () => {
+export type GetReservationsParams = {
+  date?: Date | string;
+};
+
+const getReservations = async ({ date }: GetReservationsParams) => {
+  const where: any = {};
+
+  if (date) {
+    where.createdAt = {
+      gt: date,
+    };
+  }
   try {
     const reservations = await prisma.reservations.findMany({
+      where: {
+        ...where,
+      },
       select: {
         spotId: true,
         userId: true,

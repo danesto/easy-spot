@@ -10,4 +10,12 @@ const getDateFromTimestamp = (timestamp: number) => {
   return new Date(currentTimestamp);
 };
 
-export { getTimestamp, getDateFromTimestamp };
+const toPrismaDate = (date?: string) => {
+  if (date) {
+    return `${date}T00:00:00.000Z`;
+  }
+
+  return `${new Date().toISOString().split('T')[0]}T00:00:00.000Z`;
+};
+
+export { getTimestamp, getDateFromTimestamp, toPrismaDate };

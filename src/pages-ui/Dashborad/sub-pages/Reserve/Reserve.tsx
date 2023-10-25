@@ -1,15 +1,26 @@
 'use server';
-import { Divider, Flex, Heading, Spinner } from '@/components/Chakra';
+import { Divider, Flex, Heading } from '@/components/Chakra';
 
 import { ParkingLot } from './ParkingLot/ParkingLot';
 import { Filters } from './Filters/Filters';
-import { Suspense } from 'react';
+
+import { getParkingLots } from '@/queries/parking-lot';
+import { getServerSession } from 'next-auth';
+import { getUser } from '@/queries/user';
 
 interface ReserveProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export default async function Reserve({ searchParams }: ReserveProps) {
+  const session = await getServerSession();
+
+  const currentUser = await getUser(session?.user?.email || '');
+
+  const parkingLots = await getParkingLots({
+    userId: currentUser?.id as number,
+  });
+
   return (
     <Flex flexDir="column" gap="50px">
       <Flex flexDir="column">
@@ -18,18 +29,17 @@ export default async function Reserve({ searchParams }: ReserveProps) {
         </Heading>
         {/* <Text fontSize="sm" color="gray.500">
           Total spots: {parkingSpaces?.total}
-        </Text>
-        <Text fontSize="sm" color="green.500">
+        </Text> */}
+        {/* <Text fontSize="sm" color="green.500">
           Available: {parkingSpaces?.total! - reservations?.length!}
         </Text> */}
       </Flex>
       <Flex flexDir="column" gap="40px" alignItems="flex-start">
-        <Filters />
+        <Filters parkingLots={parkingLots || []} />
+
         <Divider mt={0} orientation="horizontal" />
 
-        <Suspense fallback={<Spinner />}>
-          <ParkingLot searchParams={searchParams} />
-        </Suspense>
+        <ParkingLot />
       </Flex>
     </Flex>
   );

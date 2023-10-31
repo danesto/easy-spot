@@ -20,6 +20,15 @@
 
 .reservedByMe {
   border-color: var(--chakra-colors-red-400);
+  outline: 1px solid var(--chakra-colors-red-400);
+
+  background: repeating-linear-gradient(
+    45deg,
+    var(--chakra-colors-red-50),
+    var(--chakra-colors-red-50) 5px,
+    white 5px,
+    white 10px
+  );
 
   &:hover {
     border-color: var(--chakra-colors-red-600);

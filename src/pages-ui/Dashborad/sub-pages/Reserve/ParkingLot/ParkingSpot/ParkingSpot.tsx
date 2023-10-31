@@ -44,17 +44,20 @@ function ParkingSpot({ spot, reservations }: ParkingSpotProps) {
     if (!!!isHavingReservations) {
       startTransition(async () => {
         // pass the date for reservations
-        await submitReservation({
+        const newReservation = await submitReservation({
           userId: user?.id as number,
           spotId: spotId,
           date: reservationDate,
         });
 
+        // TODO: populate cache with newly addede element
         mutate(
           (key) => Array.isArray(key) && key[0] === 'reservations',
-          undefined,
+          async (data: any) => {
+            return [...data, ...[newReservation]];
+          },
           {
-            revalidate: true,
+            revalidate: false,
           }
         );
 
@@ -128,7 +131,7 @@ function ParkingSpot({ spot, reservations }: ParkingSpotProps) {
       <Heading fontSize="lg" as="h5" fontWeight="medium">
         {spot.name}
       </Heading>
-      <Badge color="gray.600" width="max-content">
+      <Badge className={styles.badge} color="gray.600" width="max-content">
         {spot.parkingLot.name}
       </Badge>
 

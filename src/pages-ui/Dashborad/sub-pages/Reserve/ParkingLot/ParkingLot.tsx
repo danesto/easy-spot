@@ -46,11 +46,9 @@ export function ParkingLot() {
     }
   );
 
-  const isDataLoading =
-    isLoading ||
-    isReservationsLoading ||
-    isReservationsValidating ||
-    isValidating;
+  const isDataLoading = isLoading || isReservationsLoading;
+  // isReservationsValidating ||
+  // isValidating;
 
   return (
     <>

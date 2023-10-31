@@ -1,6 +1,8 @@
 import prisma from '@/../lib/prisma';
 import { ParkingLot, ParkingSpot } from '@prisma/client';
 import { FilteringParams } from './types';
+import { getReservations } from './reservations';
+import { toPrismaDate } from '@/helpers/date';
 
 type GetParkingLots = {
   userId: number;
@@ -76,13 +78,16 @@ const createParkingLot = async ({
 export type GetTotalParkingSpotsByLotParams = {
   parkingLotId?: number;
   search?: string;
+  availableOnly?: boolean;
 };
 
 const getTotalParkingSpotsByLot = async ({
   parkingLotId,
   search,
+  availableOnly,
 }: GetTotalParkingSpotsByLotParams) => {
   const parkingLotFilter: FilteringParams = {};
+  const spotFilter: { id: { notIn: number[] } } = { id: { notIn: [] } };
 
   if (parkingLotId) {
     parkingLotFilter.id = parkingLotId;
@@ -98,12 +103,22 @@ const getTotalParkingSpotsByLot = async ({
       },
     });
 
+    if (availableOnly) {
+      const reservations = await getReservations({ date: toPrismaDate() });
+
+      spotFilter.id.notIn =
+        (reservations?.map((res) => res.spotId) as number[]) || [];
+    } else {
+      spotFilter.id.notIn = [];
+    }
+
     const spots = await prisma.parkingSpot.findMany({
       where: {
         name: {
           contains: search || '',
           mode: 'insensitive',
         },
+        ...spotFilter,
         parkingLot: {
           ...parkingLotFilter,
           users: {

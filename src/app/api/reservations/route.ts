@@ -1,5 +1,4 @@
 import { FilteringParams } from '@/constants/query-params';
-import { toPrismaDate } from '@/helpers/date';
 import { getReservations } from '@/queries/reservations';
 import { NextResponse } from 'next/server';
 
@@ -8,9 +7,7 @@ export async function GET(request: Request) {
 
   const date = searchParams.get(FilteringParams.Date) ?? undefined;
 
-  const prismaDate = toPrismaDate(date);
-
-  const spots = await getReservations({ date: prismaDate });
+  const spots = await getReservations({ date: date });
 
   return NextResponse.json(spots);
 }

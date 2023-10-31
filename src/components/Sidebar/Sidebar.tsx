@@ -11,6 +11,7 @@ import Link from 'next/link';
 
 const Sidebar = () => {
   const user = useContext(AuthContext);
+
   return (
     <Flex bgColor="blue.800" className={styles.container}>
       <Flex flexDir="column" position="sticky" top="0">

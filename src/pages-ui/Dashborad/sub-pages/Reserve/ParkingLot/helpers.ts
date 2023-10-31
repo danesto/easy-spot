@@ -10,7 +10,7 @@ import { ReservationTypes } from './types';
 const getReservationType = (
   spotId: number,
   userId: number,
-  reservations: (Reservations & { user: { email: string | null } })[] | null
+  reservations: Reservations[] | null
 ) => {
   const currentSpot = reservations?.find((res) => res?.spotId === spotId);
 

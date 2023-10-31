@@ -1,8 +1,19 @@
 .datePicker {
+  background-color: #fff;
   div:first-child {
     padding: 3px;
-    border-radius: 5px;
-    border-color: #e2e8f0;
-    background-color: #fff;
+  }
+}
+
+.filters {
+  .input,
+  .datePicker > div:first-child {
+    border: 1px solid;
+    border-color: var(--chakra-colors-gray-400);
+    border-radius: var(--chakra-radii-sm);
+
+    &:hover {
+      border-color: #2b4365;
+    }
   }
 }

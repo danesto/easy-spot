@@ -1,7 +1,7 @@
 'use client';
 
 import { User } from '@prisma/client';
-import { createContext } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext<Partial<User> | null>(null);
 
@@ -11,7 +11,17 @@ interface AuthProviderProps {
 }
 
 const AuthProvider = ({ children, user }: AuthProviderProps) => {
-  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
+  const [authUser, setAuthUser] = useState<Partial<User> | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      setAuthUser(user);
+    }
+  }, [user]);
+
+  return (
+    <AuthContext.Provider value={authUser}>{children}</AuthContext.Provider>
+  );
 };
 
 export { AuthContext };

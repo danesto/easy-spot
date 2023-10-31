@@ -1,10 +1,11 @@
 'use client';
-import { Grid, Skeleton } from '@/components/Chakra';
+import { Grid, Skeleton, Text } from '@/components/Chakra';
 import { ParkingSpot as Spot } from './ParkingSpot/ParkingSpot';
 import { getReservations, getSpots } from './fetchers';
 import { useSearchParams } from 'next/navigation';
 import { FilteringParams } from '@/constants/query-params';
 import useSWR from 'swr';
+import { toPrismaDate } from '@/helpers/date';
 
 export function ParkingLot() {
   const searchParams = useSearchParams();
@@ -12,43 +13,72 @@ export function ParkingLot() {
   const lotId = searchParams.get(FilteringParams.ParkingLot);
   const search = searchParams.get(FilteringParams.Search);
   const date = searchParams.get(FilteringParams.Date);
+  const availableOnly = searchParams.get(FilteringParams.AvailableOnly);
 
-  const { data, isLoading } = useSWR(['spots', lotId, search], () =>
-    getSpots({
-      parkingLotId: parseInt(lotId as string),
-      search: search as string,
-    })
-  );
-
-  const { data: reservation, isLoading: isReservationsLoading } = useSWR(
+  const {
+    data: reservation,
+    isLoading: isReservationsLoading,
+    isValidating: isReservationsValidating,
+  } = useSWR(
     ['reservations', date],
     () =>
       getReservations({
-        date: date ?? undefined,
+        // ensures that either query is sent for today or with picked value
+        date: toPrismaDate(date ?? undefined),
       }),
     {
+      shouldRetryOnError: false,
+      revalidateOnFocus: false,
+    }
+  );
+
+  const { data, isLoading, isValidating } = useSWR(
+    ['spots', lotId, search, availableOnly],
+    () =>
+      getSpots({
+        parkingLotId: parseInt(lotId as string),
+        search: search as string,
+        availableOnly: availableOnly === 'true',
+      }),
+    {
+      revalidateOnFocus: false,
       shouldRetryOnError: false,
     }
   );
 
-  const isDataLoading = isLoading || isReservationsLoading;
+  const isDataLoading =
+    isLoading ||
+    isReservationsLoading ||
+    isReservationsValidating ||
+    isValidating;
 
   return (
-    <Grid
-      gridTemplateColumns="repeat(5, 1fr)"
-      width="100%"
-      columnGap="10px"
-      rowGap="20px"
-    >
-      {!!isDataLoading &&
-        Array.from({ length: 15 }).map((t, index) => {
-          return <Skeleton key={index} height="150px" borderRadius="sm" />;
-        })}
+    <>
+      <Text alignSelf="end">
+        Reserving for:{' '}
+        <Text as="span" fontWeight="medium">
+          {date}
+        </Text>
+      </Text>
+      <Grid
+        gridTemplateColumns="repeat(5, 1fr)"
+        width="100%"
+        columnGap="10px"
+        rowGap="20px"
+        className="lot"
+      >
+        {!!isDataLoading &&
+          Array.from({ length: 15 }).map((t, index) => {
+            return <Skeleton key={index} height="150px" borderRadius="sm" />;
+          })}
 
-      {!!!isDataLoading &&
-        data?.spots?.map((spot: any) => {
-          return <Spot key={spot.id} spot={spot} reservations={reservation} />;
-        })}
-    </Grid>
+        {!!!isDataLoading &&
+          data?.spots?.map((spot: any) => {
+            return (
+              <Spot key={spot.id} spot={spot} reservations={reservation} />
+            );
+          })}
+      </Grid>
+    </>
   );
 }

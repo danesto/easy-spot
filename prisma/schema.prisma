@@ -56,10 +56,13 @@ model ParkingSpot {
 }
 
 model Reservations {
+  // add it's own id to be able to add same userIds and spotIds for different dates
+  id  Int @id @default(autoincrement())
   user  User  @relation(fields: [userId], references: [id])
   userId Int
   parkingSpot ParkingSpot @relation(fields: [spotId], references: [id])
-  spotId Int      @map(name: "spot_id")
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  @@id([userId, spotId])
+  spotId Int  @map(name: "spot_id")
+  // if this is not working for storing date only -- convert it to string
+  reservedAt DateTime @db.Date @map("reserved_at")
+  createdAt DateTime  @default(now()) @map(name: "created_at")
 }

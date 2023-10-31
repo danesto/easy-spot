@@ -1,16 +1,20 @@
 'use server';
 
 import {
-  AddReservationParams,
+  CreateReservationParams,
   DeleteReservationParams,
-  addReservation,
+  createReservation,
   deleteReservation,
 } from '@/queries/reservations';
 import { revalidatePath } from 'next/cache';
 
-const submitReservation = async ({ userId, spotId }: AddReservationParams) => {
+const submitReservation = async ({
+  userId,
+  spotId,
+  date,
+}: CreateReservationParams) => {
   try {
-    const newReservation = await addReservation({ userId, spotId });
+    const newReservation = await createReservation({ userId, spotId, date });
 
     revalidatePath('/dashboard/reserve');
     return newReservation;
@@ -20,11 +24,12 @@ const submitReservation = async ({ userId, spotId }: AddReservationParams) => {
 };
 
 const releaseReservation = async ({
-  userId,
-  spotId,
+  reservationId,
 }: DeleteReservationParams) => {
   try {
-    const deletedReservation = await deleteReservation({ userId, spotId });
+    const deletedReservation = await deleteReservation({
+      reservationId,
+    });
 
     revalidatePath('/dashboard/reserve');
     return deletedReservation;
@@ -34,5 +39,3 @@ const releaseReservation = async ({
 };
 
 export { submitReservation, releaseReservation };
-
-// add release action

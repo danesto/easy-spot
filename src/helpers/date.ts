@@ -18,4 +18,21 @@ const toPrismaDate = (date?: string) => {
   return `${new Date().toISOString().split('T')[0]}T00:00:00.000Z`;
 };
 
-export { getTimestamp, getDateFromTimestamp, toPrismaDate };
+/**
+ *
+ * @param date stringified date
+ * @returns readable friendly date in format "YYY-MM-DD"
+ */
+const formatDate = (date: string) => {
+  const inputDate = new Date(date as string);
+
+  const year = inputDate.getFullYear();
+  const month = String(inputDate.getMonth() + 1).padStart(2, '0');
+  const day = String(inputDate.getDate()).padStart(2, '0');
+
+  const formattedDate = `${year}-${month}-${day}`;
+
+  return formattedDate;
+};
+
+export { getTimestamp, getDateFromTimestamp, toPrismaDate, formatDate };

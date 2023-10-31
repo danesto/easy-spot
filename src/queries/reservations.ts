@@ -8,9 +8,7 @@ const getReservations = async ({ date }: GetReservationsParams) => {
   const where: any = {};
 
   if (date) {
-    where.createdAt = {
-      gt: date,
-    };
+    where.reservedAt = date;
   }
   try {
     const reservations = await prisma.reservations.findMany({
@@ -35,16 +33,22 @@ const getReservations = async ({ date }: GetReservationsParams) => {
   }
 };
 
-type AddReservationParams = {
+type CreateReservationParams = {
   userId: number;
   spotId: number;
+  date: string;
 };
-const addReservation = async ({ userId, spotId }: AddReservationParams) => {
+const createReservation = async ({
+  date,
+  userId,
+  spotId,
+}: CreateReservationParams) => {
   try {
     const reservations = await prisma.reservations.create({
       data: {
         userId: userId,
         spotId: spotId,
+        reservedAt: date,
       },
     });
     return reservations;
@@ -54,21 +58,16 @@ const addReservation = async ({ userId, spotId }: AddReservationParams) => {
 };
 
 type DeleteReservationParams = {
-  spotId: number;
-  userId: number;
+  reservationId: number;
 };
 
 const deleteReservation = async ({
-  spotId,
-  userId,
+  reservationId,
 }: DeleteReservationParams) => {
   try {
     const reservations = await prisma.reservations.delete({
       where: {
-        userId_spotId: {
-          spotId: spotId,
-          userId: userId,
-        },
+        id: reservationId,
       },
     });
     return reservations;
@@ -77,6 +76,6 @@ const deleteReservation = async ({
   }
 };
 
-export { getReservations, addReservation, deleteReservation };
+export { getReservations, createReservation, deleteReservation };
 
-export type { AddReservationParams, DeleteReservationParams };
+export type { CreateReservationParams, DeleteReservationParams };

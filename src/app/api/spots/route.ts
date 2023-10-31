@@ -11,9 +11,13 @@ export async function GET(request: Request) {
 
   const search = searchParams.get(FilteringParams.Search);
 
+  const availableOnly =
+    searchParams.get(FilteringParams.AvailableOnly) === 'true';
+
   const spots = await getTotalParkingSpotsByLot({
     parkingLotId: parkingLotId,
     search: search || undefined,
+    availableOnly,
   });
 
   return NextResponse.json(spots);

@@ -10,7 +10,7 @@ import styles from './filters.module.scss';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 
-import { getTimestamp } from '@/helpers/date';
+import { formatDate } from '@/helpers/date';
 import { FilteringParams } from '@/constants/query-params';
 import { ParkingLot } from '@prisma/client';
 
@@ -22,10 +22,6 @@ interface FiltersProps {
   parkingLots: ParkingLot[];
 }
 export function Filters({ parkingLots }: FiltersProps) {
-  const [previewDate, setPreviewDate] = useState<
-    DatePickerValue | string | undefined
-  >(new Date().toISOString());
-  const [q, setQ] = useState('');
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -37,22 +33,12 @@ export function Filters({ parkingLots }: FiltersProps) {
 
   const params = new URLSearchParams(Array.from(searchParams.entries()));
 
-  // Setting date to query params needs to be handled seperately
+  // Handle setting params at the same place for all filters
   const handleOnDateChange = (date: DatePickerValue) => {
-    const dateTest = date?.toString();
-
     if (date) {
-      setPreviewDate(date);
-      const inputDate = new Date(dateTest as string);
+      const formattedDate = formatDate(date.toString());
 
-      // Get year, month, and day components from the parsed date
-      const year = inputDate.getFullYear();
-      const month = String(inputDate.getMonth() + 1).padStart(2, '0'); // Month is 0-based, so add 1 and format as two digits
-      const day = String(inputDate.getDate()).padStart(2, '0');
-
-      // Create the output date string in 'YYYY-MM-DD' format
-      const outputDateStr = `${year}-${month}-${day}`;
-      params.set(FilteringParams.Date, `${outputDateStr}`);
+      params.set(FilteringParams.Date, `${formattedDate}`);
 
       const query = params.toString();
 
@@ -62,11 +48,8 @@ export function Filters({ parkingLots }: FiltersProps) {
 
   const handleSetSearch = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.value) {
-      setQ(e.currentTarget.value);
-
       params.set(FilteringParams.Search, e.currentTarget.value);
     } else {
-      setQ('');
       params.delete(FilteringParams.Search);
     }
 
@@ -87,9 +70,21 @@ export function Filters({ parkingLots }: FiltersProps) {
     router.push(`${pathname}?${query}`);
   };
 
+  const handleSetAvailableOnly = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.currentTarget.checked) {
+      params.set(FilteringParams.AvailableOnly, e.target.checked.toString());
+    } else {
+      params.delete(FilteringParams.AvailableOnly);
+    }
+
+    const query = params.toString();
+
+    router.push(`${pathname}?${query}`);
+  };
+
   return (
     <form>
-      <Flex gap="40px">
+      <Flex gap="40px" className={styles.filters}>
         <Flex flexDir="column" gap="10px">
           <Text fontSize="md" fontWeight="medium">
             Date:
@@ -98,10 +93,10 @@ export function Filters({ parkingLots }: FiltersProps) {
             className={styles.datePicker}
             minDate={new Date()}
             maxDate={new Date(sevenDaysFromNow)}
-            onChange={handleOnDateChange}
             clearIcon={null}
             format="y-MM-dd"
-            value={previewDate}
+            value={params.get(FilteringParams.Date) ?? new Date().toISOString()}
+            onChange={handleOnDateChange}
           />
           <Checkbox
             justifySelf="center"
@@ -109,6 +104,10 @@ export function Filters({ parkingLots }: FiltersProps) {
             mt="20px"
             borderColor="blue.500"
             padding="1"
+            isChecked={
+              params.get(FilteringParams.AvailableOnly) === 'true' ?? false
+            }
+            onChange={handleSetAvailableOnly}
           >
             Show available only
           </Checkbox>
@@ -119,8 +118,10 @@ export function Filters({ parkingLots }: FiltersProps) {
             Parking lot:
           </Text>
           <Select
-            w="150px"
+            className={styles.input}
+            w="180px"
             backgroundColor="#fff"
+            value={params.get(FilteringParams.ParkingLot) ?? undefined}
             onChange={handleSetParkingLot}
           >
             <option value="All">All lots</option>
@@ -139,9 +140,9 @@ export function Filters({ parkingLots }: FiltersProps) {
             Search spaces:
           </Text>
           <Input
+            className={styles.input}
             bgColor="#fff"
             placeholder="P3"
-            value={q}
             onChange={handleSetSearch}
           />
         </Flex>

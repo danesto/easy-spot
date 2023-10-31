@@ -4,10 +4,13 @@ import { GetReservationsParams } from '@/queries/reservations';
 const getSpots = async ({
   parkingLotId,
   search,
+  availableOnly,
 }: GetTotalParkingSpotsByLotParams) => {
   try {
     const res = await fetch(
-      `/api/spots?lot=${parkingLotId || ''}&q=${search || ''}`
+      `/api/spots?lot=${parkingLotId || ''}&q=${
+        search || ''
+      }&free=${availableOnly}`
     );
 
     return res.json();

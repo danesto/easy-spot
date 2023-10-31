@@ -15,14 +15,22 @@ import { useContext, useTransition } from 'react';
 import { releaseReservation, submitReservation } from '../actions';
 import { getReservationType } from '../helpers';
 import styles from '../parking-lot.module.scss';
+import { useSearchParams } from 'next/navigation';
+import { toPrismaDate } from '@/helpers/date';
+import { FilteringParams } from '@/constants/query-params';
+import { Reservations } from '@prisma/client';
 
 interface ParkingSpotProps {
   spot: any;
-  reservations: any;
+  reservations: Reservations[];
 }
 
 function ParkingSpot({ spot, reservations }: ParkingSpotProps) {
   const toast = useToast();
+  const searchParams = useSearchParams();
+  const reservationDate = toPrismaDate(
+    searchParams.get(FilteringParams.Date) ?? undefined
+  );
 
   const user = useContext(AuthContext);
   const [isPending, startTransition] = useTransition();
@@ -34,9 +42,11 @@ function ParkingSpot({ spot, reservations }: ParkingSpotProps) {
   const handleSubmitReservation = (spotName: string, spotId: number) => () => {
     if (!!!isHavingReservations) {
       startTransition(async () => {
+        // pass the date for reservations
         await submitReservation({
           userId: user?.id as number,
           spotId: spotId,
+          date: reservationDate,
         });
 
         toast({
@@ -62,16 +72,15 @@ function ParkingSpot({ spot, reservations }: ParkingSpotProps) {
     }
   };
 
-  const handleReleaseReservation = (spotId: number) => () => {
-    try {
-      startTransition(async () => {
-        await releaseReservation({
-          userId: user?.id as number,
-          spotId: spotId,
+  const handleReleaseReservation = (reservationId?: number) => () => {
+    if (reservationId) {
+      try {
+        startTransition(async () => {
+          await releaseReservation({ reservationId });
         });
-      });
-    } catch (e) {
-      toast({ status: 'error', title: 'Error realising' });
+      } catch (e) {
+        toast({ status: 'error', title: 'Error realising' });
+      }
     }
   };
 
@@ -103,7 +112,7 @@ function ParkingSpot({ spot, reservations }: ParkingSpotProps) {
         colorScheme={reservationTypesMap[type].buttonColorScheme}
         onClick={
           type === ReservationTypes.ReservedByMe
-            ? handleReleaseReservation(spot.id)
+            ? handleReleaseReservation(isHavingReservations?.id)
             : handleSubmitReservation(spot.name, spot.id)
         }
       >

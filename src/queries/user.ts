@@ -1,6 +1,7 @@
 import prisma from '@/../lib/prisma';
 
 const getUser = async (email: string) => {
+  console.log('user', email);
   try {
     return await prisma.user.findUnique({
       where: {
@@ -14,7 +15,7 @@ const getUser = async (email: string) => {
       },
     });
   } catch (e) {
-    console.log(e);
+    console.log('ERROR', e);
   }
 };
 
@@ -38,6 +39,7 @@ const authorizeUser = async ({ email, password }: AuthorizeUser) => {
 
     return user;
   } catch (error: any) {
+    console.log('FAIL', error);
     return false;
   }
 };

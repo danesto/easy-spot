@@ -1,9 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  plugins: [['styled-components', { ssr: true }]],
-  experimental: {
-    serverActions: true,
-  },
-};
+const nextConfig = {};
 
 module.exports = nextConfig;

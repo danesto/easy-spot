@@ -8,7 +8,7 @@
 
 header {
   grid-area: header;
-  border-bottom: 1px solid var(--chakra-colors-gray-100);
+  border-bottom: 1px solid var(--chakra-colors-gray-300);
   display: flex;
   align-items: center;
   justify-items: flex-start;

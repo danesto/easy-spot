@@ -8,17 +8,18 @@ import {
   Spinner,
   useToast,
 } from '@/components/Chakra';
-import cx from 'classnames';
 import { reservationTypesMap, ReservationTypes } from '../types';
 import { AuthContext } from '@/app/providers/auth-provider';
 import { useContext, useTransition } from 'react';
 import { releaseReservation, submitReservation } from '../actions';
 import { getReservationType } from '../helpers';
-import styles from '../parking-lot.module.scss';
 import { useSearchParams } from 'next/navigation';
 import { toPrismaDate } from '@/helpers/date';
 import { FilteringParams } from '@/constants/query-params';
 import { Reservations } from '@prisma/client';
+import { mutate } from 'swr';
+import cx from 'classnames';
+import styles from '../parking-lot.module.scss';
 
 interface ParkingSpotProps {
   spot: any;
@@ -49,6 +50,14 @@ function ParkingSpot({ spot, reservations }: ParkingSpotProps) {
           date: reservationDate,
         });
 
+        mutate(
+          (key) => Array.isArray(key) && key[0] === 'reservations',
+          undefined,
+          {
+            revalidate: true,
+          }
+        );
+
         toast({
           title: 'Space reserved!',
           description: `You've sucessefully reserved parking spot ${spotName}`,
@@ -77,6 +86,22 @@ function ParkingSpot({ spot, reservations }: ParkingSpotProps) {
       try {
         startTransition(async () => {
           await releaseReservation({ reservationId });
+        });
+        mutate(
+          (key) => Array.isArray(key) && key[0] === 'reservations',
+          async (data: any) => {
+            return data.filter((res: Reservations) => res.id !== reservationId);
+          },
+          { revalidate: false }
+        );
+        toast({
+          title: 'Space released!',
+          description: `You've sucessefully released parking spot ${spot.name}`,
+          status: 'success',
+          duration: 6000,
+          variant: 'subtle',
+          isClosable: true,
+          position: 'top',
         });
       } catch (e) {
         toast({ status: 'error', title: 'Error realising' });

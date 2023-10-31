@@ -16,6 +16,7 @@ const getReservations = async ({ date }: GetReservationsParams) => {
         ...where,
       },
       select: {
+        id: true,
         spotId: true,
         userId: true,
         createdAt: true,

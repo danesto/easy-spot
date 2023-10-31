@@ -4,8 +4,8 @@ import { ParkingSpot as Spot } from './ParkingSpot/ParkingSpot';
 import { getReservations, getSpots } from './fetchers';
 import { useSearchParams } from 'next/navigation';
 import { FilteringParams } from '@/constants/query-params';
+import { formatDate, toPrismaDate } from '@/helpers/date';
 import useSWR from 'swr';
-import { toPrismaDate } from '@/helpers/date';
 
 export function ParkingLot() {
   const searchParams = useSearchParams();
@@ -57,7 +57,7 @@ export function ParkingLot() {
       <Text alignSelf="end">
         Reserving for:{' '}
         <Text as="span" fontWeight="medium">
-          {date}
+          {date ?? `${formatDate(new Date().toString())}`}
         </Text>
       </Text>
       <Grid

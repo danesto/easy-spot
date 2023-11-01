@@ -41,13 +41,13 @@ function ParkingSpot({ spot, reservations, isValidating }: ParkingSpotProps) {
     (res: any) => res.userId === user?.id
   );
 
-  const handleSubmitReservation = (spotName: string, spotId: number) => () => {
+  const handleSubmitReservation = () => {
     if (!!!isHavingReservations) {
       startTransition(async () => {
         // pass the date for reservations
         const newReservation = await submitReservation({
           userId: user?.id as number,
-          spotId: spotId,
+          spotId: spot.id,
           date: reservationDate,
         });
 
@@ -64,7 +64,7 @@ function ParkingSpot({ spot, reservations, isValidating }: ParkingSpotProps) {
 
         toast({
           title: 'Space reserved!',
-          description: `You've sucessefully reserved parking spot ${spotName}`,
+          description: `You've sucessefully reserved parking spot ${spot.name}`,
           status: 'success',
           duration: 6000,
           variant: 'subtle',
@@ -85,16 +85,18 @@ function ParkingSpot({ spot, reservations, isValidating }: ParkingSpotProps) {
     }
   };
 
-  const handleReleaseReservation = (reservationId?: number) => () => {
-    if (reservationId) {
+  const handleReleaseReservation = () => {
+    if (isHavingReservations?.id) {
       try {
         startTransition(async () => {
-          await releaseReservation({ reservationId });
+          await releaseReservation({ reservationId: isHavingReservations.id });
         });
         mutate(
           (key) => Array.isArray(key) && key[0] === 'reservations',
           async (data: any) => {
-            return data.filter((res: Reservations) => res.id !== reservationId);
+            return data.filter(
+              (res: Reservations) => res.id !== isHavingReservations.id
+            );
           },
           { revalidate: false }
         );
@@ -145,8 +147,8 @@ function ParkingSpot({ spot, reservations, isValidating }: ParkingSpotProps) {
         colorScheme={reservationTypesMap[type].buttonColorScheme}
         onClick={
           type === ReservationTypes.ReservedByMe
-            ? handleReleaseReservation(isHavingReservations?.id)
-            : handleSubmitReservation(spot.name, spot.id)
+            ? handleReleaseReservation
+            : handleSubmitReservation
         }
       >
         {reservationTypesMap[type].buttonLabel}

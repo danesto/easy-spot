@@ -24,9 +24,10 @@ import styles from '../parking-lot.module.scss';
 interface ParkingSpotProps {
   spot: any;
   reservations: Reservations[];
+  isValidating: boolean;
 }
 
-function ParkingSpot({ spot, reservations }: ParkingSpotProps) {
+function ParkingSpot({ spot, reservations, isValidating }: ParkingSpotProps) {
   const toast = useToast();
   const searchParams = useSearchParams();
   const reservationDate = toPrismaDate(
@@ -136,7 +137,11 @@ function ParkingSpot({ spot, reservations }: ParkingSpotProps) {
       </Badge>
 
       <Button
-        isDisabled={reservationTypesMap[type].isButtonDisabled || isPending}
+        isDisabled={
+          reservationTypesMap[type].isButtonDisabled ||
+          isPending ||
+          isValidating
+        }
         colorScheme={reservationTypesMap[type].buttonColorScheme}
         onClick={
           type === ReservationTypes.ReservedByMe

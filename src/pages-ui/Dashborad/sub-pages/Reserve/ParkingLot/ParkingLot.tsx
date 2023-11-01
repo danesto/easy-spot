@@ -73,7 +73,12 @@ export function ParkingLot() {
         {!!!isDataLoading &&
           data?.spots?.map((spot: any) => {
             return (
-              <Spot key={spot.id} spot={spot} reservations={reservation} />
+              <Spot
+                key={spot.id}
+                spot={spot}
+                reservations={reservation}
+                isValidating={isValidating || isReservationsValidating}
+              />
             );
           })}
       </Grid>

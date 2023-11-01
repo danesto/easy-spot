@@ -2,7 +2,8 @@
 import { Divider, Flex, Heading, Text } from '@/components/Chakra';
 import appSettings from '@/app.json';
 import NavLink from './NavLink/NavLink';
-import { menuItems } from './constants';
+import { Home, Calendar, Layers } from 'react-feather';
+import { NavLinkProps } from './NavLink/NavLink';
 
 import styles from './sidebar.module.scss';
 import { useContext } from 'react';
@@ -11,6 +12,25 @@ import Link from 'next/link';
 
 const Sidebar = () => {
   const user = useContext(AuthContext);
+
+  const menuItems: NavLinkProps[] = [
+    {
+      icon: <Home />,
+      href: '/dashboard',
+      label: 'Home',
+    },
+    {
+      icon: <Calendar />,
+      href: '/dashboard/reserve',
+      label: 'Reserve',
+    },
+    {
+      icon: <Layers />,
+      href: '/dashboard/parking-lots',
+      label: 'Parking lots',
+      isHidden: !user?.isAdmin,
+    },
+  ];
 
   return (
     <Flex bgColor="blue.800" className={styles.container}>

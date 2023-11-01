@@ -10,6 +10,7 @@ export interface NavLinkProps {
   icon: JSX.Element;
   href: string;
   label: string;
+  isHidden?: boolean;
 }
 
 /**
@@ -18,8 +19,12 @@ export interface NavLinkProps {
  * @prop href: link href
  * @prop label: link label
  */
-function NavLink({ icon, href, label }: NavLinkProps) {
+function NavLink({ icon, href, label, isHidden }: NavLinkProps) {
   const pathname = usePathname();
+
+  if (isHidden) {
+    return null;
+  }
 
   return (
     <Link

@@ -1,7 +1,7 @@
 'use client';
 import { Checkbox, Flex, Input, Select, Text } from '@/components/Chakra';
 import DatePicker from 'react-date-picker';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent } from 'react';
 
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';

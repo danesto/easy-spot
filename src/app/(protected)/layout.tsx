@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Sidebar from '@/components/Sidebar/Sidebar';
 import { Grid } from '@/components/Grid';
 import {
   Avatar,
@@ -16,10 +15,11 @@ import {
 
 import '../globals.css';
 import { ChevronDownIcon } from '@/components/Icon';
-import Link from 'next/link';
 import { getServerSession } from 'next-auth';
-import AuthProvider from '../providers/auth-provider';
 import { getUser } from '@/queries/user';
+import Sidebar from '@/components/Sidebar/Sidebar';
+import AuthProvider from '../providers/auth-provider';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'FreeSpot',
@@ -72,8 +72,10 @@ export default async function RootLayout({
                 <Avatar size="sm" name="Danilo Stojanovic" />
               </MenuButton>
               <MenuList borderRadius="sm">
-                <MenuItem>Podesavanja</MenuItem>
-                <MenuItem>Pomoc</MenuItem>
+                <MenuItem as={Link} href="/dashboard/settings">
+                  Settings
+                </MenuItem>
+                <MenuItem>Help</MenuItem>
               </MenuList>
             </Menu>
           </Flex>

@@ -21,9 +21,9 @@ import EditDrawer from './EditDrawer/EditDrawer';
 import Empty from '@/components/Empty';
 import { MoreVertical, Plus, Trash2 } from 'react-feather';
 
-import styles from './parking-lots.module.scss';
 import { useState } from 'react';
 import { ParkingLot } from '@prisma/client';
+import styles from './parking-lots.module.scss';
 
 interface ParkingLotsProps {
   lots?: any[];

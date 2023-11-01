@@ -1,9 +1,8 @@
 'use client';
 import { Divider, Flex, Heading, Text } from '@/components/Chakra';
 import appSettings from '@/app.json';
-import NavLink from './NavLink/NavLink';
+import NavLink, { NavLinkProps } from './NavLink/NavLink';
 import { Home, Calendar, Layers } from 'react-feather';
-import { NavLinkProps } from './NavLink/NavLink';
 
 import styles from './sidebar.module.scss';
 import { useContext } from 'react';

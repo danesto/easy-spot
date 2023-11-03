@@ -144,6 +144,7 @@ function ParkingSpot({ spot, reservations, isValidating }: ParkingSpotProps) {
           isPending ||
           isValidating
         }
+        borderRadius="sm"
         colorScheme={reservationTypesMap[type].buttonColorScheme}
         onClick={
           type === ReservationTypes.ReservedByMe

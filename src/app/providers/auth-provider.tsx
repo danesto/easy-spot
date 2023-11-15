@@ -1,19 +1,22 @@
 'use client';
 
-import { User } from '@prisma/client';
+import { Organization, User } from '@prisma/client';
 import { createContext, useEffect, useState } from 'react';
 
-const AuthContext = createContext<Partial<User> | null>(null);
+type AuthUser = Partial<(User & { organization: Organization }) | null>;
+
+const AuthContext = createContext<AuthUser>(null);
 
 interface AuthProviderProps {
-  user: Partial<User> | null;
+  user: AuthUser;
   children: JSX.Element | JSX.Element[];
 }
 
 const AuthProvider = ({ children, user }: AuthProviderProps) => {
-  const [authUser, setAuthUser] = useState<Partial<User> | null>(null);
+  const [authUser, setAuthUser] = useState<AuthUser>(null);
 
   useEffect(() => {
+    console.log(user);
     if (user) {
       setAuthUser(user);
     }

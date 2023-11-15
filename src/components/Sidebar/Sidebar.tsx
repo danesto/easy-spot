@@ -45,7 +45,7 @@ const Sidebar = () => {
             @ {user?.email}
           </Text>
           <Text fontSize="sm" color="gray.100">
-            TX services
+            {user?.organization?.name}
           </Text>
         </Flex>
         <Divider borderColor="gray.700" />

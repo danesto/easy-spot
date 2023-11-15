@@ -22,6 +22,8 @@ model User {
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   parkingLots   ParkingLotsOfUsers[]
   parkingSpots  Reservations[]
+  organization Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int  @map(name: "parking_lot_id")
   @@map(name: "user")
 }
 
@@ -65,4 +67,10 @@ model Reservations {
   // if this is not working for storing date only -- convert it to string
   reservedAt DateTime @db.Date @map("reserved_at")
   createdAt DateTime  @default(now()) @map(name: "created_at")
+}
+
+model Organization {
+  id  Int @id @default(autoincrement())
+  name String
+  users User[]
 }

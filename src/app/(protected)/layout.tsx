@@ -32,7 +32,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession();
-  console.log('session', session);
   const currentUser = await getUser(session?.user?.email || '');
 
   return (

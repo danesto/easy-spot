@@ -18,8 +18,11 @@ function InvitationsForm() {
       subtitle="Add people to parking lots"
       tooltipContent={
         <>
-          <p>1. Choose parking lots that you want to add users to.</p>
-          <p>2. Enter comma seperated email address.</p>
+          <p>1. Enter email addresses you want to add to your organization.</p>
+          <p>
+            2. Users with provided email addresses will get their credentials
+            via email and automatically be part of the organization.
+          </p>
         </>
       }
     >
@@ -33,6 +36,7 @@ function InvitationsForm() {
             </Checkbox>
           </Stack>
         </CheckboxGroup>
+
         <FormControl mt="20px">
           <FormLabel
             fontSize="medium"
@@ -48,6 +52,7 @@ function InvitationsForm() {
             size="sm"
           />
         </FormControl>
+
         <Button width="100px" mt="20px" colorScheme="blue" borderRadius="sm">
           Save
         </Button>

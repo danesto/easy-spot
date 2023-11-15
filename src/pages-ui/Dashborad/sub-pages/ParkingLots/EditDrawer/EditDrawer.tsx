@@ -87,6 +87,7 @@ function EditDrawer({
                 colorScheme="blue"
                 type="submit"
                 alignSelf="flex-start"
+                borderRadius="sm"
               >
                 Add parking lot
               </Button>

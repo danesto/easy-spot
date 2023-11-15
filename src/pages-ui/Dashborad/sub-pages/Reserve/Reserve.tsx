@@ -24,7 +24,7 @@ export default async function Reserve({ searchParams }: ReserveProps) {
   return (
     <Flex flexDir="column" gap="50px">
       <Flex flexDir="column">
-        <Heading as="h2" fontSize="2xl" fontWeight="semibold" mb="1">
+        <Heading as="h2" fontSize="3xl" fontWeight="bold" letterSpacing="tight">
           Reserve a spot
         </Heading>
         {/* <Text fontSize="sm" color="gray.500">

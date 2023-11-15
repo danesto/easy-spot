@@ -45,7 +45,7 @@ function ParkingLots({ lots }: ParkingLotsProps) {
 
   return (
     <Stack gap="40px">
-      <Heading fontSize="2xl" as="h2" fontWeight="semibold">
+      <Heading fontSize="3xl" as="h2" fontWeight="bold">
         Parking lots
         <IconButton
           size="sm"
@@ -55,6 +55,7 @@ function ParkingLots({ lots }: ParkingLotsProps) {
           ml="10px"
           colorScheme="blue"
           onClick={handleSetEditMode(false)}
+          borderRadius="sm"
         />
       </Heading>
       <Grid

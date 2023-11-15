@@ -44,11 +44,13 @@ export function Card({
         {footer}
 
         {href ? (
-          <Button as={Link} href={href}>
+          <Button as={Link} href={href} borderRadius="sm">
             {buttonLabel}
           </Button>
         ) : (
-          <Button onClick={onButtonClick}>{buttonLabel}</Button>
+          <Button onClick={onButtonClick} borderRadius="sm">
+            {buttonLabel}
+          </Button>
         )}
       </CardFooter>
     </ChakraCard>

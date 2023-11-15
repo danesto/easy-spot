@@ -40,6 +40,7 @@ select {
 
   &:focus {
     outline: 2px solid var(--chakra-colors-blue-500);
+    background-color: var(--chakra-colors-gray-100);
     border-color: transparent;
   }
 

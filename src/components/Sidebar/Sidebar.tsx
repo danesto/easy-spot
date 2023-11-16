@@ -7,6 +7,7 @@ import { Home, Calendar, Layers } from 'react-feather';
 import styles from './sidebar.module.scss';
 import { useContext } from 'react';
 import { AuthContext } from '@/app/providers/auth-provider';
+import Logo from '@/assets/logo-light.svg';
 import Link from 'next/link';
 
 const Sidebar = () => {
@@ -35,6 +36,7 @@ const Sidebar = () => {
     <Flex bgColor="blue.800" className={styles.container}>
       <Flex flexDir="column" position="sticky" top="0">
         <Flex className={styles.sidebar_box} mt={0}>
+          <img src={Logo.src} alt="freespot logo white" width="20px" />
           <Heading as="h1" fontSize="24px" color="gray.100">
             {appSettings.appName}
           </Heading>

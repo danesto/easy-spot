@@ -15,6 +15,9 @@
 
   &:first-child {
     margin-top: 15px;
+    flex-direction: row;
+    align-items: end;
+    gap: 10px;
   }
 
   p {

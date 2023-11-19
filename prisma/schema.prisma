@@ -20,10 +20,9 @@ model User {
   isAdmin       Boolean   @map(name: "is_admin")
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  parkingLots   ParkingLotsOfUsers[]
   parkingSpots  Reservations[]
   organization Organization @relation(fields: [organizationId], references: [id])
-  organizationId Int  @map(name: "parking_lot_id")
+  organizationId Int  @map(name: "organization_id")
   @@map(name: "user")
 }
 
@@ -32,18 +31,10 @@ model ParkingLot {
   name String
   numberOfSpots Int  @map(name: "number_of_spots")
   prefix  String
-  users   ParkingLotsOfUsers[]
   spots ParkingSpot[]
+  organization Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int  @map(name: "organization_id")
   @@map(name: "parking_lot")
-}
-
-model ParkingLotsOfUsers {
-  user  User            @relation(fields: [userId], references: [id])
-  userId Int
-  parkingLot ParkingLot @relation(fields: [parkingLotId], references: [id])
-  parkingLotId Int      @map(name: "parking_lot_id")
-  @@id([userId, parkingLotId])
-  @@map(name: "parking_lots_of_users")
 }
 
 model ParkingSpot {
@@ -73,4 +64,5 @@ model Organization {
   id  Int @id @default(autoincrement())
   name String
   users User[]
+  parkingLots ParkingLot[]
 }

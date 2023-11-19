@@ -12,14 +12,14 @@ import {
   MenuItem,
   MenuList,
 } from '@/components/Chakra';
-
-import '../globals.css';
 import { ChevronDownIcon } from '@/components/Icon';
 import { getServerSession } from 'next-auth';
 import { getUser } from '@/queries/user';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import AuthProvider from '../providers/auth-provider';
 import Link from 'next/link';
+
+import '../globals.css';
 
 export const metadata: Metadata = {
   title: 'FreeSpot',

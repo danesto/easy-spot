@@ -1,7 +1,6 @@
 import prisma from '@/../lib/prisma';
 
 const getUser = async (email: string) => {
-  console.log('user', email);
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -13,6 +12,7 @@ const getUser = async (email: string) => {
         name: true,
         isAdmin: true,
         organization: true,
+        organizationId: true,
       },
     });
 

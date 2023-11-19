@@ -1,11 +1,15 @@
+import { Session, getServerSession } from 'next-auth';
 import prisma from '../../lib/prisma';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export type GetReservationsParams = {
   date?: Date | string;
 };
 
+// get reservations for current organization only
 const getReservations = async ({ date }: GetReservationsParams) => {
   const where: any = {};
+  const { user } = (await getServerSession(authOptions)) as Session;
 
   if (date) {
     where.reservedAt = date;
@@ -14,6 +18,12 @@ const getReservations = async ({ date }: GetReservationsParams) => {
     const reservations = await prisma.reservations.findMany({
       where: {
         ...where,
+        // tddo: check if this works??
+        parkingSpot: {
+          parkingLot: {
+            organizationId: user?.organizationId as number,
+          },
+        },
       },
       select: {
         id: true,

@@ -3,6 +3,8 @@ import { ParkingLot, ParkingSpot } from '@prisma/client';
 import { FilteringParams } from './types';
 import { getReservations } from './reservations';
 import { toPrismaDate } from '@/helpers/date';
+import { Session, getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 type GetParkingLots = {
   userId: number;
@@ -10,13 +12,13 @@ type GetParkingLots = {
 
 // todo: get userId from localStorage token (or session?)
 const getParkingLots = async ({ userId }: GetParkingLots) => {
+  const { user } = (await getServerSession(authOptions)) as Session;
+
   try {
     const parkingLots = await prisma.parkingLot.findMany({
       where: {
-        users: {
-          some: {
-            userId: userId,
-          },
+        organization: {
+          id: user?.organizationId,
         },
       },
     });
@@ -32,6 +34,8 @@ const createParkingLot = async ({
   numberOfSpots,
   prefix,
 }: Omit<ParkingLot, 'id'>) => {
+  const { user } = (await getServerSession(authOptions)) as Session;
+
   try {
     // create new lot
     const newParkingLot = await prisma.parkingLot.create({
@@ -39,16 +43,7 @@ const createParkingLot = async ({
         name: name,
         numberOfSpots,
         prefix,
-      },
-    });
-
-    // and populate many to many relation table as well
-    // for corresponding user
-    await prisma.parkingLotsOfUsers.create({
-      data: {
-        // todo: replace userId with user id from active session
-        userId: 1,
-        parkingLotId: newParkingLot.id,
+        organizationId: user?.organizationId as number,
       },
     });
 
@@ -86,6 +81,8 @@ const getTotalParkingSpotsByLot = async ({
   search,
   availableOnly,
 }: GetTotalParkingSpotsByLotParams) => {
+  const { user } = (await getServerSession(authOptions)) as Session;
+
   const parkingLotFilter: FilteringParams = {};
   const spotFilter: { id: { notIn: number[] } } = { id: { notIn: [] } };
 
@@ -96,7 +93,9 @@ const getTotalParkingSpotsByLot = async ({
   try {
     const totalSum = await prisma.parkingLot.aggregate({
       where: {
-        users: { some: { userId: 1 } },
+        organization: {
+          id: user?.organizationId as number,
+        },
       },
       _sum: {
         numberOfSpots: true,
@@ -104,6 +103,7 @@ const getTotalParkingSpotsByLot = async ({
     });
 
     if (availableOnly) {
+      // get reservations for current organization only
       const reservations = await getReservations({ date: toPrismaDate() });
 
       spotFilter.id.notIn =
@@ -121,10 +121,8 @@ const getTotalParkingSpotsByLot = async ({
         ...spotFilter,
         parkingLot: {
           ...parkingLotFilter,
-          users: {
-            some: {
-              userId: 1,
-            },
+          organization: {
+            id: user?.organizationId as number,
           },
         },
       },
@@ -135,11 +133,6 @@ const getTotalParkingSpotsByLot = async ({
         parkingLot: {
           select: {
             name: true,
-            users: {
-              select: {
-                userId: true,
-              },
-            },
           },
         },
       },

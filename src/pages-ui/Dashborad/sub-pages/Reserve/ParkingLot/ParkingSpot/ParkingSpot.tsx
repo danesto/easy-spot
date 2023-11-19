@@ -28,6 +28,7 @@ interface ParkingSpotProps {
 }
 
 function ParkingSpot({ spot, reservations, isValidating }: ParkingSpotProps) {
+  console.log('parking spt', spot);
   const toast = useToast();
   const searchParams = useSearchParams();
   const reservationDate = toPrismaDate(
@@ -135,7 +136,7 @@ function ParkingSpot({ spot, reservations, isValidating }: ParkingSpotProps) {
         {spot.name}
       </Heading>
       <Badge className={styles.badge} color="gray.600" width="max-content">
-        {spot.parkingLot.name}
+        {spot?.parkingLot?.name}
       </Badge>
 
       <Button

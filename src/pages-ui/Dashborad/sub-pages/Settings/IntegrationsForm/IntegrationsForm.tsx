@@ -1,6 +1,6 @@
+import { Image, Link } from '@/components/Chakra';
 import NextLink from 'next/link';
 import SettingsSection from '../SettingsSection';
-import { Image, Link } from '@/components/Chakra';
 import styles from '../settings.module.scss';
 
 const SLACK_CLIENT_ID = process.env.SLACK_CLIENT_ID;
@@ -8,7 +8,7 @@ const SLACK_CLIENT_ID = process.env.SLACK_CLIENT_ID;
 function IntegrationsForm() {
   return (
     <SettingsSection
-      title="Connect with Slack to receieve notifications"
+      title="Slack notifications"
       subtitle="You'll receieve notifications directly on your Slack selected channel if parking spot gets released"
     >
       <Link

@@ -9,6 +9,7 @@ import { useContext } from 'react';
 import { AuthContext } from '@/app/providers/auth-provider';
 import Logo from '@/assets/logo-light.svg';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Sidebar = () => {
   const user = useContext(AuthContext);
@@ -36,7 +37,12 @@ const Sidebar = () => {
     <Flex bgColor="blue.800" className={styles.container}>
       <Flex flexDir="column" position="sticky" top="0">
         <Flex className={styles.sidebar_box} mt={0}>
-          <img src={Logo.src} alt="freespot logo white" width="20px" />
+          <Image
+            src={Logo.src}
+            alt="freespot logo white"
+            width={20}
+            height={20}
+          />
           <Heading as="h1" fontSize="24px" color="gray.100">
             {appSettings.appName}
           </Heading>

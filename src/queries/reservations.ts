@@ -18,7 +18,6 @@ const getReservations = async ({ date }: GetReservationsParams) => {
     const reservations = await prisma.reservations.findMany({
       where: {
         ...where,
-        // tddo: check if this works??
         parkingSpot: {
           parkingLot: {
             organizationId: user?.organizationId as number,

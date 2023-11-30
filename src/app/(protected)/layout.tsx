@@ -58,7 +58,7 @@ export default async function RootLayout({
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </Breadcrumb>
-            <Menu>
+            <Menu placement="bottom-end">
               <MenuButton
                 as={Button}
                 variant="ghost"
@@ -70,7 +70,7 @@ export default async function RootLayout({
               >
                 <Avatar size="sm" name="Danilo Stojanovic" />
               </MenuButton>
-              <MenuList borderRadius="sm">
+              <MenuList marginTop="1" borderRadius="sm" borderColor="gray.400">
                 <MenuItem as={Link} href="/dashboard/settings">
                   Settings
                 </MenuItem>

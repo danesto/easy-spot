@@ -33,7 +33,7 @@ const createParkingLot = async ({
   name,
   numberOfSpots,
   prefix,
-}: Omit<ParkingLot, 'id'>) => {
+}: Omit<ParkingLot, 'id' | 'organizationId'>) => {
   const { user } = (await getServerSession(authOptions)) as Session;
 
   try {

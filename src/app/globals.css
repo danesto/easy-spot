@@ -48,3 +48,10 @@ select {
     box-shadow: unset !important;
   }
 }
+
+button:not([role='tab']),
+.chakra-button {
+  &:active {
+    box-shadow: var(--chakra-shadows-outline) !important;
+  }
+}

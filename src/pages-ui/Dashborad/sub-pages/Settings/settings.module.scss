@@ -52,4 +52,16 @@
       }
     }
   }
+  .slackLink {
+    width: max-content;
+
+    :hover {
+      filter: brightness(0.95);
+    }
+
+    :active {
+      box-shadow: var(--chakra-shadows-outline);
+      border-radius: 5px;
+    }
+  }
 }

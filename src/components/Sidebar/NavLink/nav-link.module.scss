@@ -25,6 +25,10 @@
     background-color: var(--chakra-colors-blackAlpha-200);
     border-color: var(--chakra-colors-gray-700);
     background-color: var(--chakra-colors-blackAlpha-200);
-    outline: 1.5px solid var(--chakra-colors-whiteAlpha-500);
+  }
+
+  &:active,
+  &:focus-visible {
+    box-shadow: var(--chakra-shadows-outline);
   }
 }

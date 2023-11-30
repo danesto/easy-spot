@@ -10,6 +10,7 @@ import {
 import styles from './settings.module.scss';
 import InvitationsForm from './InvitationsForm/InvitationsForm';
 import PlatesForm from './PlatesForm/PlatesForm';
+import IntegrationsForm from './IntegrationsForm/IntegrationsForm';
 
 function Setting() {
   return (
@@ -42,6 +43,9 @@ function Setting() {
             </TabPanel>
             <TabPanel>
               <PlatesForm />
+            </TabPanel>
+            <TabPanel>
+              <IntegrationsForm />
             </TabPanel>
           </TabPanels>
         </Flex>

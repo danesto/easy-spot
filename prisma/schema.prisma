@@ -65,4 +65,11 @@ model Organization {
   name String
   users User[]
   parkingLots ParkingLot[]
+  slackIntegration  SlackIntegration?
+}
+
+model SlackIntegration {
+  id  Int @id @default(autoincrement())
+  organization Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int @unique @map(name: "organization_id")
 }

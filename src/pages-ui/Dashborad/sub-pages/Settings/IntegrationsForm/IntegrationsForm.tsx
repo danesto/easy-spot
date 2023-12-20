@@ -3,11 +3,25 @@ import NextLink from 'next/link';
 import SettingsSection from '../SettingsSection';
 import styles from '../settings.module.scss';
 import { useSearchParams } from 'next/navigation';
+import { useTransition } from 'react';
+import { integrateSlackWebhook } from './actions';
 
 function IntegrationsForm() {
+  const [isPending, startTransition] = useTransition();
+
   const SLACK_CLIENT_ID = process.env.NEXT_PUBLIC_SLACK_CLIENT_ID;
   const searchParams = useSearchParams();
   const slackAuthCode = searchParams.get('code');
+
+  const handleFinihSlackIntegration = () => {
+    if (slackAuthCode) {
+      startTransition(async () => {
+        const data = await integrateSlackWebhook(slackAuthCode);
+
+        console.log('response', data);
+      });
+    }
+  };
 
   return (
     <SettingsSection
@@ -29,7 +43,9 @@ function IntegrationsForm() {
             </span>
             to finish things up and install the app.
           </Text>
-          <Button colorScheme="blue">Finish setting up</Button>
+          <Button onClick={handleFinihSlackIntegration} colorScheme="blue">
+            Finish setting up
+          </Button>
         </Alert>
       ) : (
         <Link

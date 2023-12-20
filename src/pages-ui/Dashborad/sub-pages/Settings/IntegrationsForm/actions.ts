@@ -16,52 +16,71 @@ const app = new App({
 });
 
 const integrateSlackWebhook = async (code: string) => {
-  const urlencoded = new URLSearchParams();
+  //   const urlencoded = new URLSearchParams();
+  //   urlencoded.append(
+  //     'client_id',
+  //     process.env.NEXT_PUBLIC_SLACK_CLIENT_ID as string
+  //   );
+  //   urlencoded.append('client_secret', process.env.SLACK_CLIENT_SECRET as string);
+  //   urlencoded.append('code', code);
+  //   urlencoded.append('redirect_uri', process.env.SLACK_REDIRECT_URI as string);
+  //   try {
+  //     // const response = await fetch('https://slack.com/api/oauth.v2.access', {
+  //     //   method: 'POST',
+  //     //   headers: {
+  //     //     'Content-Type': 'application/x-www-form-urlencoded',
+  //     //   },
+  //     //   body: urlencoded,
+  //     //   redirect: 'follow',
+  //     // });
+  //     const response = app.client.oauth.v2.access({
+  //       code: code,
+  //       client_id: process.env.NEXT_PUBLIC_SLACK_CLIENT_ID as string,
+  //       client_secret: process.env.SLACK_CLIENT_SECRET as string,
+  //       scopes: ['incoming-webhook'],
+  //     });
+  //     console.log('RESPONSE', await response);
+  //     if (response) {
+  //       const { channel, channel_id, url } = (response as any).incoming_webhook;
+  //       try {
+  //         const integration = createIntegration({
+  //           channel,
+  //           channelId: channel_id,
+  //           webhookUrl: url,
+  //         });
+  //         return integration;
+  //       } catch (prismaError) {
+  //         console.log('Prisma create failed: ', prismaError);
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.log('Integration error', e);
+  //   }
+  var myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
+
+  var urlencoded = new URLSearchParams();
+  urlencoded.append('client_id', '6258994789863.6266915244694');
+  urlencoded.append('client_secret', 'c9bd3c96eaa5a30a6a00030de90465b2');
   urlencoded.append(
-    'client_id',
-    process.env.NEXT_PUBLIC_SLACK_CLIENT_ID as string
+    'code',
+    '6258994789863.6399216172048.263c249a0f861c9fcfd2a077b7118055fe2925c523b5a521675a2e210280801f'
   );
-  urlencoded.append('client_secret', process.env.SLACK_CLIENT_SECRET as string);
-  urlencoded.append('code', code);
-  urlencoded.append('redirect_uri', process.env.SLACK_REDIRECT_URI as string);
+  urlencoded.append(
+    'redirect_uri',
+    'https://easy-spot.vercel.app/dashboard/settings?tab=notifications'
+  );
 
-  try {
-    // const response = await fetch('https://slack.com/api/oauth.v2.access', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/x-www-form-urlencoded',
-    //   },
-    //   body: urlencoded,
-    //   redirect: 'follow',
-    // });
+  const requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: urlencoded,
+  };
 
-    const response = app.client.oauth.v2.access({
-      code: code,
-      client_id: process.env.NEXT_PUBLIC_SLACK_CLIENT_ID as string,
-      client_secret: process.env.SLACK_CLIENT_SECRET as string,
-      scopes: ['incoming-webhook'],
-    });
-
-    console.log('RESPONSE', await response);
-
-    if (response) {
-      const { channel, channel_id, url } = (response as any).incoming_webhook;
-
-      try {
-        const integration = createIntegration({
-          channel,
-          channelId: channel_id,
-          webhookUrl: url,
-        });
-
-        return integration;
-      } catch (prismaError) {
-        console.log('Prisma create failed: ', prismaError);
-      }
-    }
-  } catch (e) {
-    console.log('Integration error', e);
-  }
+  fetch('https://slack.com/api/oauth.v2.access', requestOptions)
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.log('error', error));
 };
 
 export { integrateSlackWebhook };

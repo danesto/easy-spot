@@ -11,7 +11,7 @@ const app = new App({
   // LogLevel can be imported and used to make debugging simpler
   logLevel: LogLevel.DEBUG,
   stateSecret: 'secer',
-  scopes: [],
+  scopes: ['incoming-webhook'],
   processBeforeResponse: true,
 });
 
@@ -39,7 +39,7 @@ const integrateSlackWebhook = async (code: string) => {
       code: code,
       client_id: process.env.NEXT_PUBLIC_SLACK_CLIENT_ID as string,
       client_secret: process.env.SLACK_CLIENT_SECRET as string,
-      scopes: [],
+      scopes: ['incoming-webhook'],
     });
 
     console.log('RESPONSE', await response);
